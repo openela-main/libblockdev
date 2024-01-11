@@ -125,12 +125,14 @@
 
 Name:        libblockdev
 Version:     2.28
-Release:     2%{?dist}
+Release:     4%{?dist}
 Summary:     A library for low-level manipulation with block devices
 License:     LGPLv2+
 URL:         https://github.com/storaged-project/libblockdev
 Source0:     https://github.com/storaged-project/libblockdev/releases/download/%{version}-%{release}/%{name}-%{version}.tar.gz
 Patch0:      0001-crypto-Fix-GError-overwrite-from-libvolume_key.patch
+Patch1:      0002-tests-Fix-test_swapon_pagesize-on-systems-with-64k-p.patch
+Patch2:      0003-part-Fix-segfault-when-adding-a-partition-too-big-fo.patch
 
 BuildRequires: make
 BuildRequires: glib2-devel
@@ -685,6 +687,8 @@ A meta-package that pulls all the libblockdev plugins as dependencies.
 %prep
 %setup -q -n %{name}-%{version}
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %build
 autoreconf -ivf
@@ -988,6 +992,14 @@ find %{buildroot} -type f -name "*.la" | xargs %{__rm}
 %files plugins-all
 
 %changelog
+* Tue May 16 2023 Vojtech Trefny <vtrefny@redhat.com> - 2.28-4
+- Fix segfault when adding a partition too big for MSDOS
+  Resolves: rhbz#2207500
+
+* Mon Apr 03 2023 Vojtech Trefny <vtrefny@redhat.com> - 2.28-3
+- Fix test_swapon_pagesize on systems with 64k pages
+  Resolves: rhbz#2138698
+
 * Wed Nov 30 2022 Vojtech Trefny <vtrefny@redhat.com> - 2.28-2
 - Fix double free in write_escrow_data_file
   Resolves: rhbz#2142660
