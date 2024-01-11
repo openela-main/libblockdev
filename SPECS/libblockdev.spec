@@ -129,7 +129,7 @@
 
 Name:        libblockdev
 Version:     2.28
-Release:     4%{?dist}
+Release:     7%{?dist}
 Summary:     A library for low-level manipulation with block devices
 License:     LGPLv2+
 URL:         https://github.com/storaged-project/libblockdev
@@ -140,6 +140,10 @@ Patch2:      0002-Add-support-for-creating-and-activating-integrity-de.patch
 Patch3:      0003-NVMe-plugin-backport.patch
 Patch4:      0004-Fix-double-free-in-write_escrow_data_file.patch
 Patch5:      0005-nvme-Fix-namespace-identifiers.patch
+Patch6:      0006-Allow-resizing-of-inactive-LVs-with-latest-LVM.patch
+Patch7:      0007-tests-Fix-test_swapon_pagesize-on-systems-with-64k-p.patch
+Patch8:      0008-part-Fix-segfault-when-adding-a-partition-too-big-fo.patch
+Patch9:      0009-Fix-issues-in-tests-when-running-in-FIPS-mode.patch
 
 BuildRequires: make
 BuildRequires: glib2-devel
@@ -726,6 +730,10 @@ A meta-package that pulls all the libblockdev plugins as dependencies.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
+%patch9 -p1
 
 %build
 autoreconf -ivf
@@ -1044,6 +1052,21 @@ find %{buildroot} -type f -name "*.la" | xargs %{__rm}
 %files plugins-all
 
 %changelog
+* Wed May 24 2023 Vojtech Trefny <vtrefny@redhat.com> - 2.28-7
+- Fix issues in tests when running in FIPS mode
+  Resolves: rhbz#2188749
+  Resolves: rhbz#2188603
+
+* Tue May 16 2023 Vojtech Trefny <vtrefny@redhat.com> - 2.28-6
+- Fix segfault when adding a partition too big for MSDOS
+  Resolves: rhbz#2185564
+
+* Mon Apr 03 2023 Vojtech Trefny <vtrefny@redhat.com> - 2.28-5
+- Allow resizing of inactive LVs with latest LVM
+  Resolves: rhbz#2161181
+- Fix test_swapon_pagesize on systems with 64k pages
+  Resolves: rhbz#2168220
+
 * Thu Jan 05 2023 Vojtech Trefny <vtrefny@redhat.com> - 2.28-4
 - nvme: Fix namespace identifiers
   Resolves: rhbz#2151535
