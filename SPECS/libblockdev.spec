@@ -129,7 +129,7 @@
 
 Name:        libblockdev
 Version:     2.28
-Release:     7%{?dist}
+Release:     10%{?dist}
 Summary:     A library for low-level manipulation with block devices
 License:     LGPLv2+
 URL:         https://github.com/storaged-project/libblockdev
@@ -144,6 +144,9 @@ Patch6:      0006-Allow-resizing-of-inactive-LVs-with-latest-LVM.patch
 Patch7:      0007-tests-Fix-test_swapon_pagesize-on-systems-with-64k-p.patch
 Patch8:      0008-part-Fix-segfault-when-adding-a-partition-too-big-fo.patch
 Patch9:      0009-Fix-issues-in-tests-when-running-in-FIPS-mode.patch
+Patch10:     0010-lvm-Add-a-function-to-activate-LVs-in-shared-mode.patch
+Patch11:     0011-nvme_libblockdev-3.0.4_backport.patch
+Patch12:     0012-lvm-Add-support-for-starting-and-stopping-VG-locking.patch
 
 BuildRequires: make
 BuildRequires: glib2-devel
@@ -723,17 +726,7 @@ A meta-package that pulls all the libblockdev plugins as dependencies.
 
 
 %prep
-%setup -q -n %{name}-%{version}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
+%autosetup -n %{name}-%{version} -p1
 
 %build
 autoreconf -ivf
@@ -1052,6 +1045,21 @@ find %{buildroot} -type f -name "*.la" | xargs %{__rm}
 %files plugins-all
 
 %changelog
+* Wed Nov 08 2023 Vojtech Trefny <vtrefny@redhat.com> - 2.28-10
+- lvm: Add support for starting and stopping VG locking
+  Resolves: RHEL-15921
+
+* Wed Nov 01 2023 Tomas Bzatek <tbzatek@redhat.com> - 2.28-9
+- nvme: HostID fixes for TP4126
+  Resolves: RHEL-1375
+- nvme: Stack smashing fixes
+  Resolves: RHEL-13127
+  Resolves: RHEL-8037
+
+* Tue Oct 17 2023 Vojtech Trefny <vtrefny@redhat.com> - 2.28-8
+- lvm: Add a function to activate LVs in shared mode
+  Resolves: RHEL-14018
+
 * Wed May 24 2023 Vojtech Trefny <vtrefny@redhat.com> - 2.28-7
 - Fix issues in tests when running in FIPS mode
   Resolves: rhbz#2188749
