@@ -125,7 +125,7 @@
 
 Name:        libblockdev
 Version:     2.28
-Release:     4%{?dist}
+Release:     6%{?dist}
 Summary:     A library for low-level manipulation with block devices
 License:     LGPLv2+
 URL:         https://github.com/storaged-project/libblockdev
@@ -133,6 +133,8 @@ Source0:     https://github.com/storaged-project/libblockdev/releases/download/%
 Patch0:      0001-crypto-Fix-GError-overwrite-from-libvolume_key.patch
 Patch1:      0002-tests-Fix-test_swapon_pagesize-on-systems-with-64k-p.patch
 Patch2:      0003-part-Fix-segfault-when-adding-a-partition-too-big-fo.patch
+Patch3:      0004-lvm-Add-a-function-to-activate-LVs-in-shared-mode.patch
+Patch4:      0005-lvm-Add-support-for-starting-and-stopping-VG-locking.patch
 
 BuildRequires: make
 BuildRequires: glib2-devel
@@ -685,10 +687,7 @@ A meta-package that pulls all the libblockdev plugins as dependencies.
 
 
 %prep
-%setup -q -n %{name}-%{version}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
+%autosetup -n %{name}-%{version} -p1
 
 %build
 autoreconf -ivf
@@ -992,6 +991,14 @@ find %{buildroot} -type f -name "*.la" | xargs %{__rm}
 %files plugins-all
 
 %changelog
+* Wed Nov 08 2023 Vojtech Trefny <vtrefny@redhat.com> - 2.28-10
+- lvm: Add support for starting and stopping VG locking
+  Resolves: RHEL-15923
+
+* Thu Oct 19 2023 Vojtech Trefny <vtrefny@redhat.com> - 2.28-5
+- lvm: Add a function to activate LVs in shared mode
+  Resolves: RHEL-14023
+
 * Tue May 16 2023 Vojtech Trefny <vtrefny@redhat.com> - 2.28-4
 - Fix segfault when adding a partition too big for MSDOS
   Resolves: rhbz#2207500
