@@ -1,0 +1,60 @@
+From 874f378ae48860be89807c8021f66d23d5c7da62 Mon Sep 17 00:00:00 2001
+From: Vojtech Trefny <vtrefny@redhat.com>
+Date: Thu, 14 Mar 2024 13:53:04 +0100
+Subject: [PATCH] nvme: Add bd_nvme_is_tech_avail to the API file
+
+---
+ src/lib/plugin_apis/nvme.api | 11 +++++++++++
+ tests/nvme_test.py           | 14 ++++++++++++++
+ 2 files changed, 25 insertions(+)
+
+diff --git a/src/lib/plugin_apis/nvme.api b/src/lib/plugin_apis/nvme.api
+index 667dbe9e..af892d8e 100644
+--- a/src/lib/plugin_apis/nvme.api
++++ b/src/lib/plugin_apis/nvme.api
+@@ -66,6 +66,17 @@ typedef enum {
+     BD_NVME_TECH_MODE_INITIATOR    = 1 << 2,
+ } BDNVMETechMode;
+ 
++/**
++ * bd_nvme_is_tech_avail:
++ * @tech: the queried tech
++ * @mode: a bit mask of queried modes of operation (#BDNVMETechMode) for @tech
++ * @error: (out) (nullable): place to store error (details about why the @tech-@mode combination is not available)
++ *
++ * Returns: whether the @tech-@mode combination is available -- supported by the
++ *          plugin implementation and having all the runtime dependencies available
++ */
++gboolean bd_nvme_is_tech_avail (BDNVMETech tech, G_GNUC_UNUSED guint64 mode, GError **error);
++
+ 
+ /* BpG-skip */
+ /**
+diff --git a/tests/nvme_test.py b/tests/nvme_test.py
+index 060d6ebc..ca4fec90 100644
+--- a/tests/nvme_test.py
++++ b/tests/nvme_test.py
+@@ -27,6 +27,20 @@ class NVMeTest(unittest.TestCase):
+             BlockDev.reinit(cls.requested_plugins, True, None)
+ 
+ 
++class NVMePluginVersionTestCase(NVMeTest):
++    @tag_test(TestTags.NOSTORAGE)
++    def test_plugin_version(self):
++       self.assertEqual(BlockDev.get_plugin_soname(BlockDev.Plugin.NVME), "libbd_nvme.so.2")
++
++    @tag_test(TestTags.NOSTORAGE)
++    def test_availability(self):
++        avail = BlockDev.nvme_is_tech_avail(BlockDev.NVMETech.NVME, 0)
++        self.assertTrue(avail)
++
++        avail = BlockDev.nvme_is_tech_avail(BlockDev.NVMETech.FABRICS, 0)
++        self.assertTrue(avail)
++
++
+ class NVMeTestCase(NVMeTest):
+     def setUp(self):
+         self.dev_file = None
+-- 
+2.46.1
+

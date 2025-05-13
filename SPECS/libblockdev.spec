@@ -129,7 +129,7 @@
 
 Name:        libblockdev
 Version:     2.28
-Release:     10%{?dist}
+Release:     13%{?dist}
 Summary:     A library for low-level manipulation with block devices
 License:     LGPLv2+
 URL:         https://github.com/storaged-project/libblockdev
@@ -147,6 +147,9 @@ Patch9:      0009-Fix-issues-in-tests-when-running-in-FIPS-mode.patch
 Patch10:     0010-lvm-Add-a-function-to-activate-LVs-in-shared-mode.patch
 Patch11:     0011-nvme_libblockdev-3.0.4_backport.patch
 Patch12:     0012-lvm-Add-support-for-starting-and-stopping-VG-locking.patch
+Patch13:     0013-tests-Remove_unreliable_nvme_attribute_checks.patch
+Patch14:     0014-nvme-Add-bd_nvme_is_tech_avail-to-the-API-file.patch
+Patch15:     0015-crypto-Add-a-function-to-set-persistent-flags-for-LU.patch
 
 BuildRequires: make
 BuildRequires: glib2-devel
@@ -1045,6 +1048,18 @@ find %{buildroot} -type f -name "*.la" | xargs %{__rm}
 %files plugins-all
 
 %changelog
+* Tue Mar 11 2025 Vojtech Trefny <vtrefny@redhat.com> - 2.28-13
+- crypto: Add a function to set persistent flags for LUKS
+  Resolves: RHEL-82886
+
+* Thu Sep 19 2024 Vojtech Trefny <vtrefny@redhat.com> - 2.28-12
+- nvme: Add bd_nvme_is_tech_avail to the API file
+  Resolves: RHEL-59588
+
+* Tue Nov 28 2023 Tomas Bzatek <tbzatek@redhat.com> - 2.28-11
+- tests: Remove unreliable nvme attribute checks
+  Resolves: RHEL-16126
+
 * Wed Nov 08 2023 Vojtech Trefny <vtrefny@redhat.com> - 2.28-10
 - lvm: Add support for starting and stopping VG locking
   Resolves: RHEL-15921
