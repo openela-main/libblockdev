@@ -129,7 +129,7 @@
 
 Name:        libblockdev
 Version:     2.28
-Release:     13%{?dist}
+Release:     14%{?dist}
 Summary:     A library for low-level manipulation with block devices
 License:     LGPLv2+
 URL:         https://github.com/storaged-project/libblockdev
@@ -150,6 +150,7 @@ Patch12:     0012-lvm-Add-support-for-starting-and-stopping-VG-locking.patch
 Patch13:     0013-tests-Remove_unreliable_nvme_attribute_checks.patch
 Patch14:     0014-nvme-Add-bd_nvme_is_tech_avail-to-the-API-file.patch
 Patch15:     0015-crypto-Add-a-function-to-set-persistent-flags-for-LU.patch
+Patch16:     0016-Dont-allow-suid-and-dev-set-on-fs-resize.patch
 
 BuildRequires: make
 BuildRequires: glib2-devel
@@ -1048,6 +1049,10 @@ find %{buildroot} -type f -name "*.la" | xargs %{__rm}
 %files plugins-all
 
 %changelog
+* Mon Jun 16 2025 Vojtech Trefny <vtrefny@redhat.com> - 2.28-14
+- Don't allow suid and dev set on fs resize (CVE-2025-6019)
+  Resolves: RHEL-96038
+
 * Tue Mar 11 2025 Vojtech Trefny <vtrefny@redhat.com> - 2.28-13
 - crypto: Add a function to set persistent flags for LUKS
   Resolves: RHEL-82886
