@@ -125,7 +125,7 @@
 
 Name:        libblockdev
 Version:     2.28
-Release:     6%{?dist}
+Release:     7%{?dist}
 Summary:     A library for low-level manipulation with block devices
 License:     LGPLv2+
 URL:         https://github.com/storaged-project/libblockdev
@@ -135,6 +135,7 @@ Patch1:      0002-tests-Fix-test_swapon_pagesize-on-systems-with-64k-p.patch
 Patch2:      0003-part-Fix-segfault-when-adding-a-partition-too-big-fo.patch
 Patch3:      0004-lvm-Add-a-function-to-activate-LVs-in-shared-mode.patch
 Patch4:      0005-lvm-Add-support-for-starting-and-stopping-VG-locking.patch
+Patch5:      0006-Don-t-allow-suid-and-dev-set-on-fs-resize.patch
 
 BuildRequires: make
 BuildRequires: glib2-devel
@@ -991,7 +992,11 @@ find %{buildroot} -type f -name "*.la" | xargs %{__rm}
 %files plugins-all
 
 %changelog
-* Wed Nov 08 2023 Vojtech Trefny <vtrefny@redhat.com> - 2.28-10
+* Mon Jun 16 2025 Vojtech Trefny <vtrefny@redhat.com> - 2.28-7
+- Don't allow suid and dev set on fs resize (CVE-2025-6019)
+  Resolves: RHEL-96034
+
+* Wed Nov 08 2023 Vojtech Trefny <vtrefny@redhat.com> - 2.28-6
 - lvm: Add support for starting and stopping VG locking
   Resolves: RHEL-15923
 
