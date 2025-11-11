@@ -86,14 +86,14 @@
 
 Name:        libblockdev
 Version:     3.2.0
-Release:     4%{?dist}
+Release:     5%{?dist}
 Summary:     A library for low-level manipulation with block devices
 License:     LGPL-2.1-or-later
 URL:         https://github.com/storaged-project/libblockdev
 Source0:     https://github.com/storaged-project/libblockdev/releases/download/%{version}/%{name}-%{version}.tar.gz
 Patch0:      0001-nvme_Avoid_element-type_g-i_annotations.patch
 Patch1:      0002-crypto-Add-a-function-to-set-persistent-flags-for-LU.patch
-Patch2:      0003-Dont-allow-suid-and-dev-set-on-fs-resize.patch
+Patch2:      0003-Don-t-allow-suid-and-dev-set-on-fs-resize.patch
 
 BuildRequires: make
 BuildRequires: glib2-devel
@@ -949,9 +949,9 @@ find %{buildroot} -type f -name "*.la" | xargs %{__rm}
 %files plugins-all
 
 %changelog
-* Mon Jun 16 2025 Vojtech Trefny <vtrefny@redhat.com> - 3.2.0-4
-- Don't allow suid and dev set on fs resize (CVE-2025-6019)
-  Resolves: RHEL-96030
+* Mon Jun 23 2025 Vojtech Trefny <vtrefny@redhat.com> - 3.2.0-5
+- Don't allow suid and dev set on fs resize
+  Resolves: RHEL-96031
 
 * Tue Mar 11 2025 Vojtech Trefny <vtrefny@redhat.com> - 3.2.0-3
 - crypto: Add a function to set persistent flags for LUKS
