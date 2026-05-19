@@ -1,4 +1,4 @@
-From f6ae95ad8652857fdcb2f5a3bda602fb14c48bbd Mon Sep 17 00:00:00 2001
+From 2118ed49dcf6adf60c6c544667dbf71c54239b86 Mon Sep 17 00:00:00 2001
 From: Thomas Blume <Thomas.Blume@suse.com>
 Date: Fri, 16 May 2025 14:27:10 +0200
 Subject: [PATCH] Don't allow suid and dev set on fs resize
@@ -9,10 +9,10 @@ Fixes: CVE-2025-6019
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/plugins/fs/generic.c b/src/plugins/fs/generic.c
-index 89d8714a..f68d7ca1 100644
+index ca08d19a..15b55271 100644
 --- a/src/plugins/fs/generic.c
 +++ b/src/plugins/fs/generic.c
-@@ -410,7 +410,7 @@ static gboolean xfs_resize_device (const gchar *device, guint64 new_size, const
+@@ -409,7 +409,7 @@ static gboolean xfs_resize_device (const gchar *device, guint64 new_size, const
                               "before resizing it.", device);
                  return FALSE;
              }
@@ -21,3 +21,6 @@ index 89d8714a..f68d7ca1 100644
              if (!ret) {
                  g_prefix_error (error, "Failed to mount '%s' before resizing it: ", device);
                  return FALSE;
+-- 
+2.49.0
+

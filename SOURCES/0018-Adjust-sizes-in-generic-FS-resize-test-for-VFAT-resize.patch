@@ -1,0 +1,32 @@
+From e00b55532172ef6ba6e70e86d27ae76661567a98 Mon Sep 17 00:00:00 2001
+From: Vojtech Trefny <vtrefny@redhat.com>
+Date: Wed, 29 Oct 2025 15:49:20 +0100
+Subject: [PATCH] tests: Adjust sizes in generic FS resize test for VFAT resize
+
+Similar change to e75820f -- when shrinking, libparted can change
+FAT from FAT32 to FAT16 but it can't change from FAT16 to FAT32
+when growing so we can't shrink (V)FAT below FAT32 minimal size
+in our tests if we want to grow it back.
+---
+ tests/fs_test.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tests/fs_test.py b/tests/fs_test.py
+index 7b5a6ac1..42140097 100644
+--- a/tests/fs_test.py
++++ b/tests/fs_test.py
+@@ -1562,12 +1562,12 @@ def _test_generic_resize(self, mkfs_function, fs_info_func=None, info_size_func=
+             size = info_size_func(fs_info_func(self.loop_dev))
+ 
+         # shrink
+-        succ = BlockDev.fs_resize(self.loop_dev, 80 * 1024**2)
++        succ = BlockDev.fs_resize(self.loop_dev, 130 * 1024**2)
+         self.assertTrue(succ)
+         if info_size_func is not None and fs_info_func is not None:
+             new_size = info_size_func(fs_info_func(self.loop_dev))
+             # do not check the size 100% precisely there may differences due to FS block size, etc.
+-            self.assertEqual(new_size, 80 * 1024**2)
++            self.assertEqual(new_size, 130 * 1024**2)
+ 
+         # resize to maximum size
+         succ = BlockDev.fs_resize(self.loop_dev, 0)
