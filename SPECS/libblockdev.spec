@@ -85,15 +85,14 @@
 %define configure_opts %{?python3_copts} %{?lvm_dbus_copts} %{?btrfs_copts} %{?crypto_copts} %{?dm_copts} %{?loop_copts} %{?lvm_copts} %{?lvm_dbus_copts} %{?mdraid_copts} %{?mpath_copts} %{?swap_copts} %{?part_copts} %{?fs_copts} %{?nvdimm_copts} %{?tools_copts} %{?gi_copts} %{?nvme_copts} %{?smart_copts} %{?smartmontools_copts}
 
 Name:        libblockdev
-Version:     3.2.0
-Release:     5%{?dist}
+Version:     3.4.0
+Release:     2%{?dist}
 Summary:     A library for low-level manipulation with block devices
 License:     LGPL-2.1-or-later
 URL:         https://github.com/storaged-project/libblockdev
 Source0:     https://github.com/storaged-project/libblockdev/releases/download/%{version}/%{name}-%{version}.tar.gz
-Patch0:      0001-nvme_Avoid_element-type_g-i_annotations.patch
-Patch1:      0002-crypto-Add-a-function-to-set-persistent-flags-for-LU.patch
-Patch2:      0003-Don-t-allow-suid-and-dev-set-on-fs-resize.patch
+
+Patch0:      0001-lvm-dbus-Show-better-error-for-invalid-LVM-IDs.patch
 
 BuildRequires: make
 BuildRequires: glib2-devel
@@ -949,6 +948,14 @@ find %{buildroot} -type f -name "*.la" | xargs %{__rm}
 %files plugins-all
 
 %changelog
+* Thu Oct 30 2025 Vojtech Trefny <vtrefny@redhat.com> - 3.4.0-2
+- lvm-dbus: Show better error for invalid LVM IDs
+  Resolves: RHEL-123039
+
+* Thu Sep 25 2025 Vojtech Trefny <vtrefny@redhat.com> - 3.4.0-1
+- Update to 3.4.0
+  Resolves: RHEL-114971
+
 * Mon Jun 23 2025 Vojtech Trefny <vtrefny@redhat.com> - 3.2.0-5
 - Don't allow suid and dev set on fs resize
   Resolves: RHEL-96031
