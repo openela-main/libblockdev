@@ -129,7 +129,7 @@
 
 Name:        libblockdev
 Version:     2.28
-Release:     16%{?dist}
+Release:     17%{?dist}
 Summary:     A library for low-level manipulation with block devices
 License:     LGPLv2+
 URL:         https://github.com/storaged-project/libblockdev
@@ -153,6 +153,7 @@ Patch15:     0015-crypto-Add-a-function-to-set-persistent-flags-for-LU.patch
 Patch16:     0016-Don-t-allow-suid-and-dev-set-on-fs-resize.patch
 Patch17:     0017-lvm-dbus-Fix-calling-lvcreate-with-empty-list-of-PVs.patch
 Patch18:     0018-Adjust-sizes-in-generic-FS-resize-test-for-VFAT-resize.patch
+Patch19:     0019-md-Fix-getting-bitmap-location-on-latest-kernels.patch
 
 BuildRequires: make
 BuildRequires: glib2-devel
@@ -1051,6 +1052,10 @@ find %{buildroot} -type f -name "*.la" | xargs %{__rm}
 %files plugins-all
 
 %changelog
+* Thu Jul 09 2026 Vojtech Trefny <vtrefny@redhat.com> - 2.28-17
+- Fix getting bitmap location on latest kernels
+  Resolves: RHEL-177942
+
 * Thu Oct 30 2025 Vojtech Trefny <vtrefny@redhat.com> - 2.28-16
 - tests: Adjust sizes in generic FS resize test for VFAT resize
   Resolves: RHEL-124142

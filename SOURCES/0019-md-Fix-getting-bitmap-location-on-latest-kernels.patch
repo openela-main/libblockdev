@@ -1,0 +1,81 @@
+From dafc114a5eca83c366efe0564914c26f65370fdd Mon Sep 17 00:00:00 2001
+From: Vojtech Trefny <vtrefny@redhat.com>
+Date: Wed, 5 Nov 2025 15:12:08 +0100
+Subject: [PATCH] md: Fix getting bitmap location on latest kernels
+
+The 'md/bitmap/location' file no longer exists in sysfs when the
+bitmap is not set. The location of the "internal" bitmap is also
+slightly differet now.
+---
+ src/plugins/mdraid.c | 20 +++++++++++---------
+ tests/mdraid_test.py |  3 +--
+ 2 files changed, 12 insertions(+), 11 deletions(-)
+
+diff --git a/src/plugins/mdraid.c b/src/plugins/mdraid.c
+index 86ca488b..d732629b 100644
+--- a/src/plugins/mdraid.c
++++ b/src/plugins/mdraid.c
+@@ -1482,10 +1482,11 @@ gboolean bd_md_set_bitmap_location (const gchar *raid_spec, const gchar *locatio
+  * Tech category: %BD_MD_TECH_MDRAID-%BD_MD_TECH_MODE_QUERY
+  */
+ gchar* bd_md_get_bitmap_location (const gchar *raid_spec, GError **error) {
+-    gchar *raid_node = NULL;
+-    gchar *sys_path = NULL;
++    g_autofree gchar *raid_node = NULL;
++    g_autofree gchar *sys_path = NULL;
+     gchar *ret = NULL;
+     gboolean success = FALSE;
++    GError *l_error = NULL;
+ 
+     raid_node = get_sysfs_name_from_input (raid_spec, error);
+     if (!raid_node)
+@@ -1493,17 +1494,18 @@ gchar* bd_md_get_bitmap_location (const gchar *raid_spec, GError **error) {
+         return NULL;
+ 
+     sys_path = g_strdup_printf ("/sys/class/block/%s/md/bitmap/location", raid_node);
+-    g_free (raid_node);
+ 
+-    success = g_file_get_contents (sys_path, &ret, NULL, error);
++    success = g_file_get_contents (sys_path, &ret, NULL, &l_error);
+     if (!success) {
+-        /* error is alraedy populated */
+-        g_free (sys_path);
+-        return NULL;
++        if (g_error_matches (l_error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
++            g_clear_error (&l_error);
++            return g_strdup ("none");
++        } else {
++            g_propagate_prefixed_error (error, l_error, "Failed to get bitmap location: ");
++            return NULL;
++        }
+     }
+ 
+-    g_free (sys_path);
+-
+     return g_strstrip (ret);
+ }
+ 
+diff --git a/tests/mdraid_test.py b/tests/mdraid_test.py
+index 38f43a0d..be227339 100644
+--- a/tests/mdraid_test.py
++++ b/tests/mdraid_test.py
+@@ -521,7 +521,6 @@ class MDTestNameNodeBijection(MDTestCase):
+         self.assertTrue(succ)
+ 
+ class MDTestSetBitmapLocation(MDTestCase):
+-    @tag_test(TestTags.SLOW, TestTags.UNSTABLE)
+     def test_set_bitmap_location(self):
+         """Verify we can change bitmap location for an existing MD array"""
+ 
+@@ -541,7 +540,7 @@ class MDTestSetBitmapLocation(MDTestCase):
+         self.assertTrue(succ)
+ 
+         loc = BlockDev.md_get_bitmap_location("bd_test_md")
+-        self.assertEqual(loc, "+8")
++        self.assertIn(loc, ("+8", "+2"))
+ 
+         # test some different name specifications
+         # (need to switch between internal and none because setting the same
+-- 
+2.54.0
+
